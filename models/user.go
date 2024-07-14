@@ -1,6 +1,8 @@
 package models
 
 import (
+	"errors"
+
 	"githib.com/ShahSau/Ticketr/db"
 	"githib.com/ShahSau/Ticketr/utils"
 )
@@ -39,6 +41,26 @@ func (u User) Save() error {
 	}
 
 	u.ID = userId
+
+	return nil
+}
+
+func (u User) Authenticate() error {
+	query := "SELECT id, password FROM users WHERE email = ?"
+	row := db.DB.QueryRow(query, u.Email)
+
+	var retrievedPassword string
+	err := row.Scan(&u.ID, &retrievedPassword)
+
+	if err != nil {
+		return errors.New("Credentials invalid")
+	}
+
+	passwordIsValid := utils.CheckPasswordHash(u.Password, retrievedPassword)
+
+	if !passwordIsValid {
+		return errors.New("Credentials invalid")
+	}
 
 	return nil
 }
