@@ -83,3 +83,22 @@ func GetSingleEvent(id int64) (*Event, error) {
 
 	return &event, nil
 }
+
+func (event Event) UpdateEvent() error {
+	query := `UPDATE events SET name = ?, description = ?, location = ?, dateTime = ?, user_id = ? WHERE id = ?`
+	stmt, err := db.DB.Prepare(query)
+
+	if err != nil {
+		return err
+	}
+
+	defer stmt.Close()
+	_, err = stmt.Exec(event.Name, event.Description, event.Location, event.DateTime, event.UserID, event.ID)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+
+}
