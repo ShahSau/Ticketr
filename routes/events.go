@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"githib.com/ShahSau/Ticketr/models"
+	"githib.com/ShahSau/Ticketr/utils"
 	"github.com/gin-gonic/gin"
 )
 
@@ -20,6 +21,20 @@ func getEvents(c *gin.Context) {
 }
 
 func createEvent(c *gin.Context) {
+	token := c.Request.Header.Get("Authorization") //gets the Authorization header from the request
+
+	if token == "" {
+		c.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized access"}) //returns an error if the token is empty
+		return
+	}
+
+	err := utils.ValidateToken(token) //calls the ValidateToken function from models/event.go
+
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized access"}) //returns an error if the function fails
+		return
+	}
+
 	var event models.Event //creates a new event
 
 	if err := c.ShouldBindJSON(&event); err != nil { //binds the incoming JSON to the event struct
@@ -27,7 +42,7 @@ func createEvent(c *gin.Context) {
 		return
 	}
 
-	err := event.SaveEvent() //calls the SaveEvent function from models/event.go
+	err = event.SaveEvent() //calls the SaveEvent function from models/event.go
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Couldnot create event. Please try again later."}) //returns an error if the function fails
