@@ -1,10 +1,10 @@
 package routes
 
 import (
-	"fmt"
 	"net/http"
 
 	"githib.com/ShahSau/Ticketr/models"
+	"githib.com/ShahSau/Ticketr/utils"
 	"github.com/gin-gonic/gin"
 )
 
@@ -40,12 +40,17 @@ func login(c *gin.Context) {
 
 	err = user.Authenticate()
 
-	fmt.Println(err, "DDDDD")
-
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"message": "Invalid credentials"})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "User logged in successfully"})
+	token, err := utils.GenerateToken(user.Email, user.ID)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to generate token"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "User logged in successfully", "token": token})
 }
