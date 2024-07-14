@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"strconv"
 
 	"githib.com/ShahSau/Ticketr/db"
 	"githib.com/ShahSau/Ticketr/models"
@@ -13,8 +14,9 @@ func main() {
 
 	server := gin.Default() //creats a server with some default middleware
 
-	server.GET("/events", getEvents)    //creates a route that listens to GET requests on /events
-	server.POST("/events", createEvent) //creates a route that listens to POST requests on /events
+	server.GET("/events", getEvents)          //creates a route that listens to GET requests on /events
+	server.GET("/events/:id", getSingleEvent) //creates a route that listens to GET requests on /events/:id
+	server.POST("/events", createEvent)       //creates a route that listens to POST requests on /events
 
 	server.Run(":8080") //run the server on port 8080
 
@@ -50,4 +52,22 @@ func createEvent(c *gin.Context) {
 		"message": "Event created successfully",
 		"event":   event,
 	}) //returns the event as a JSON response
+}
+
+func getSingleEvent(c *gin.Context) {
+	id, err := strconv.ParseInt(c.Param("id"), 10, 64) //gets the id from the URL
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Invalid event ID, could not pass eventId."}) //returns an error if the id is invalid
+		return
+	}
+
+	event, err := models.GetSingleEvent(id) //calls the GetSingleEvent function from models/event.go
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Could not fetch the event"}) //returns an error if the function fails
+		return
+	}
+
+	c.JSON(http.StatusOK, event) //returns the event as a JSON response
 }
