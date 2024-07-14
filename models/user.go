@@ -45,7 +45,7 @@ func (u User) Save() error {
 	return nil
 }
 
-func (u User) Authenticate() error {
+func (u *User) Authenticate() error {
 	query := "SELECT id, password FROM users WHERE email = ?"
 	row := db.DB.QueryRow(query, u.Email)
 
@@ -53,13 +53,13 @@ func (u User) Authenticate() error {
 	err := row.Scan(&u.ID, &retrievedPassword)
 
 	if err != nil {
-		return errors.New("Credentials invalid")
+		return errors.New("credentials invalid")
 	}
 
 	passwordIsValid := utils.CheckPasswordHash(u.Password, retrievedPassword)
 
 	if !passwordIsValid {
-		return errors.New("Credentials invalid")
+		return errors.New("credentials invalid")
 	}
 
 	return nil
