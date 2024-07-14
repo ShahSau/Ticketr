@@ -94,3 +94,28 @@ func updateEvent(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Event updated successfully", "event": updatedEvent}) //returns the updated event as a JSON response
 
 }
+
+func deleteEvent(c *gin.Context) {
+	id, err := strconv.ParseInt(c.Param("id"), 10, 64) //gets the id from the URL
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Invalid event ID, could not pass eventId."})
+		return
+	}
+
+	event, err := models.GetSingleEvent(id) //calls the GetSingleEvent function from models/event.go
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Could not fetch the event"})
+		return
+	}
+
+	err = event.DeleteEvent() //calls the DeleteEvent function from models/event.go
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Could not delete the event"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Event deleted successfully"}) //returns a success message as a JSON response
+}
