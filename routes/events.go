@@ -12,7 +12,7 @@ func getEvents(c *gin.Context) {
 	events, err := models.GetAllEvents() //calls the GetEvents function from models/event.go
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()}) //returns an error if the function fails
+		c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()}) //returns an error if the function fails
 		return
 	}
 
