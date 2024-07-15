@@ -8,6 +8,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @BasePath http://localhost:8080/
+
+// @Summary all events
+// @Schemes http
+// @Description Get all the events
+// @Accept json
+// @Produce json
+// @Success 200 { List of events }
+// @Router /events [get]
 func getEvents(c *gin.Context) {
 	events, err := models.GetAllEvents() //calls the GetEvents function from models/event.go
 
@@ -19,6 +28,14 @@ func getEvents(c *gin.Context) {
 	c.JSON(http.StatusOK, events) //returns the events as a JSON response
 }
 
+// @Summary create event
+// @Schemes http
+// @Description Create a new event
+// @Accept json
+// @Produce json
+// @Param event body models.Event true "models.Event"
+// @Success 201 { models.Event }
+// @Router /events [post]
 func createEvent(c *gin.Context) {
 	userId := c.GetInt64("userId") //gets the userId from the context
 
@@ -44,6 +61,14 @@ func createEvent(c *gin.Context) {
 	}) //returns the event as a JSON response
 }
 
+// @Summary single event
+// @Schemes http
+// @Description Get a single event
+// @Accept json
+// @Produce json
+// @Param id path int true "Event ID"
+// @Success 200 { Event }
+// @Router /events/{id} [get]
 func getSingleEvent(c *gin.Context) {
 	id, err := strconv.ParseInt(c.Param("id"), 10, 64) //gets the id from the URL
 
@@ -62,6 +87,16 @@ func getSingleEvent(c *gin.Context) {
 	c.JSON(http.StatusOK, event) //returns the event as a JSON response
 }
 
+// @Summary update event
+// @Schemes http
+// @Description Update a single event
+// @Accept json
+// @Produce json
+// @Param id path int true "Event ID"
+// @Param event header string true "token"
+// @Param event body models.Event true "models.Event"
+// @Success 200 { Event }
+// @Router /events/{id} [put]
 func updateEvent(c *gin.Context) {
 	id, err := strconv.ParseInt(c.Param("id"), 10, 64) //gets the id from the URL
 
@@ -105,6 +140,14 @@ func updateEvent(c *gin.Context) {
 
 }
 
+// @Summary delete event
+// @Schemes http
+// @Description Delete a single event
+// @Accept json
+// @Produce json
+// @Param id path int true "Event ID"
+// @Success 200 { string }
+// @Router /events/{id} [delete]
 func deleteEvent(c *gin.Context) {
 	id, err := strconv.ParseInt(c.Param("id"), 10, 64) //gets the id from the URL
 

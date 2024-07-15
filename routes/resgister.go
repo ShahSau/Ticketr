@@ -8,6 +8,16 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @BasePath http://localhost:8080/
+
+// @Summary register for event
+// @Schemes http
+// @Description Register for an event
+// @Accept json
+// @Produce json
+// @Param id path int true "Event ID"
+// @Success 200 { string }
+// @Router /events/{id}/register [post]
 func registerForEvent(c *gin.Context) {
 	userID := c.GetInt64("user_id")
 	eventID, err := strconv.ParseInt(c.Param("id"), 10, 64)
@@ -35,6 +45,14 @@ func registerForEvent(c *gin.Context) {
 
 }
 
+// @Summary cancel registration
+// @Schemes http
+// @Description Cancel registration for an event
+// @Accept json
+// @Produce json
+// @Param id path int true "Event ID"
+// @Success 200 { string }
+// @Router /events/{id}/register [delete]
 func cancelRegistration(context *gin.Context) {
 	userId := context.GetInt64("userId")
 	eventId, err := strconv.ParseInt(context.Param("id"), 10, 64)

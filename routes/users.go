@@ -8,6 +8,17 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @BasePath http://localhost:8080/
+
+// @Summary register for event
+// @Schemes http
+// @Description Register for an event
+// @Accept json
+// @Produce json
+// @Param email path string true "email"
+// @Param password path string true "password"
+// @Success 201 { string }
+// @Router /signup [post]
 func signup(c *gin.Context) {
 	var user models.User
 
@@ -28,6 +39,15 @@ func signup(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"message": "User created successfully"})
 }
 
+// @Summary login
+// @Schemes http
+// @Description Login
+// @Accept json
+// @Produce json
+// @Param email path string true "email"
+// @Param password path string true "password"
+// @Success 200 { string }
+// @Router /login [post]
 func login(c *gin.Context) {
 	var user models.User
 
